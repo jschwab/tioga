@@ -283,7 +283,7 @@ class TiogaUI
   
   def parse_figs(figs)
     return [0] if (figs == nil) || (figs.length == 0)
-    return figs unless (/^\d/ === figs) || (/^-\d/ === figs)
+    return [figs] unless (/^\d/ === figs) || (/^-\d/ === figs)
     ranges = figs.split(',')
     fignums = Array.new(fm.num_figures) {|i| i}
     result = []
