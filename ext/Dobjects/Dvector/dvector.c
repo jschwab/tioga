@@ -5634,6 +5634,48 @@ static VALUE marked_array()
 
 /*
   :call-seq:
+    vector.diff()
+
+  returns the first-order differences of a dvector
+*/
+
+static VALUE dvector_diff(VALUE self)
+{
+  long len;
+  const double * values = Dvector_Data_for_Read(self, &len);
+  VALUE retval = dvector_new2(len-1,len-1);
+  double * ret = Dvector_Data_for_Write(retval,NULL);
+  long i;
+  for(i = 0; i < len-1; i++)
+	{
+	  ret[i] = values[i+1]-values[i];
+    }
+  return retval;
+}
+
+/*
+  :call-seq:
+    vector.mid()
+
+  returns the midpoints of a dvector
+*/
+
+static VALUE dvector_mid(VALUE self)
+{
+  long len;
+  const double * values = Dvector_Data_for_Read(self, &len);
+  VALUE retval = dvector_new2(len-1,len-1);
+  double * ret = Dvector_Data_for_Write(retval,NULL);
+  long i;
+  for(i = 0; i < len-1; i++)
+	{
+	  ret[i] = 0.5 * (values[i+1]+values[i]);
+    }
+  return retval;
+}
+
+/*
+  :call-seq:
   Dvector.fast_fancy_read(stream, options) => Array_of_Dvectors
   
   Reads data from an IO stream (or anything that supports a gets method)
@@ -6496,6 +6538,12 @@ void Init_Dvector() {
 
    /* simple convolution */
    rb_define_method(cDvector, "convolve", dvector_convolve, 2);
+
+   /* first order differences */
+   rb_define_method(cDvector, "diff", dvector_diff, 0);
+
+   /* arthimetic midpoints (for use with diff */
+   rb_define_method(cDvector, "mid", dvector_mid, 0);
 
    /* Fast fancy read: */
    rb_define_singleton_method(cDvector, "fast_fancy_read", 
